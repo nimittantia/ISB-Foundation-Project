@@ -14,7 +14,7 @@ st.set_page_config(layout="wide")
 st.title("Oil Market Dashboard: Prices & Production Forecasting")
 
 # --- Section 1: EIA Oil Price Data ---
-st.header("📈 Oil Spot Prices (EIA)")
+st.header("📈 Oil Spot Prices (EIA) V3")
 
 api_key = st.text_input("Enter your EIA API Key", type="password")
 start_date = st.date_input("Start Date", pd.to_datetime("2000-01-01"))
