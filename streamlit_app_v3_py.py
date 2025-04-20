@@ -76,8 +76,6 @@ st.header("🏭 Oil & Gas Production (Norwegian Petroleum)")
 @st.cache_data
 def load_production_data():
     url = "https://www.econdb.com/api/series/JODI_OIL.LD6EDLD6FCLD781.M.NO/?format=csv"
-    df = pd.read_csv(url)
-    print(df.columns)
     # Assuming 'YOUR_API_KEY' is your actual API key from econdb.com
     # Replace 'YOUR_API_KEY' with your actual API Key.
     # Refer to econdb.com documentation for how to pass API Key, it might be in Headers or URL parameters.
