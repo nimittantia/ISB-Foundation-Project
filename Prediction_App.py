@@ -38,7 +38,7 @@ def load_long_term_data():
 @st.cache_resource
 def load_long_term_model():
     with open("norway_oil_forecast_montecarlo.pkl", "rb") as f:
-        model = pickle.load(f)
+        model = joblib.load(f)
     return model
 
 # Sidebar for selecting between short-term and long-term predictions
