@@ -17,10 +17,15 @@ def load_short_term_data():
     return data
 
 @st.cache_resource
-def load_short_term_model():
-    with open("Short_term_model.pkl", "rb") as f:
-        model = pickle.load(f)
-    return model
+def load_long_term_model():
+    try:
+        with open("norway_oil_forecast_montecarlo.pkl", "rb") as f:
+            model = pickle.load(f)
+        return model
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Error loading pickle file: {e}")
+        return None
 
 # Function to load long-term data and model
 @st.cache_data
