@@ -76,13 +76,15 @@ st.header("🏭 Oil & Gas Production (Norwegian Petroleum)")
 @st.cache_data
 def load_production_data():
     url = "https://www.econdb.com/api/series/JODI_OIL.LD6EDLD6FCLD781.M.NO/?format=csv"
+    df = pd.read_csv(url)
+    print(df.columns)
     # Assuming 'YOUR_API_KEY' is your actual API key from econdb.com
     # Replace 'YOUR_API_KEY' with your actual API Key.
     # Refer to econdb.com documentation for how to pass API Key, it might be in Headers or URL parameters.
     headers = {"Authorization": "Bearer YOUR_API_KEY"}  # Example for Bearer token
     # Or as a URL parameter:
-    # url = f"{url}&api_key=YOUR_API_KEY"
-
+    # url = f"{url}&api_key=YOUR_API_KEY" 
+    
     try:
         response = requests.get(url, headers=headers) # If API key is in headers
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
@@ -96,7 +98,7 @@ def load_production_data():
     return df
 
 df_prod = load_production_data()
-st.line_chart(df_prod.set_index("Date"))
+st.line_chart(df_prod.set_index("Period"))
 
 # --- Section 3: Forecasting ---
 st.header("🔮 Forecasting Future Oil Production")
@@ -108,7 +110,7 @@ if st.button("Generate Forecast"):
     model = SimpleExpSmoothing(df_prod["Production (000 bbl/day)"]).fit()
     forecast_index = pd.date_range(start=df_prod["Date"].max(), periods=periods+1, freq="MS")[1:]
     forecast = model.forecast(periods)
-
+    
     forecast_df = pd.DataFrame({"Date": forecast_index, "Forecast": forecast})
     df_plot = df_prod.copy()
     df_plot["Type"] = "Historical"
@@ -121,4 +123,3 @@ if st.button("Generate Forecast"):
     sns.lineplot(data=combined, x="Date", y="Production (000 bbl/day)", hue="Type", ax=ax)
     st.pyplot(fig)
     st.dataframe(forecast_df)
-
