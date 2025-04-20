@@ -19,9 +19,18 @@ def load_short_term_data():
 
 @st.cache_resource
 def load_short_term_model():
-    with open("Short_term_model.pkl", "rb") as f:
-        model = joblib.load(f)
-    return model
+    """Loads a model from a CSV file.
+
+    Returns:
+        A dictionary containing the model's coefficients and intercept.
+    """
+    try:
+        df = pd.read_csv('norway_oil_forecast_montecarlo.csv')
+        model_data = df.to_dict('records')[0]  # Convert the first row of DataFrame to a dictionary
+        return model_data
+    except FileNotFoundError:
+        print("Error: 'norway_oil_forecast_montecarlo.csv' not found.")
+        return None
 
 # Function to load long-term data and model
 @st.cache_data
