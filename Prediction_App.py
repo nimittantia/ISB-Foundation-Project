@@ -12,9 +12,15 @@ st.set_page_config(page_title="Oil Price Forecasting", layout="wide")
 
 # Function to load short-term data and model
 @st.cache_data
-def load_short_term_data():
-    data = pd.read_csv("Short_term_Data.csv", parse_dates=True, index_col=0)
-    return data
+def load_short_term_model():
+    try:
+        with open("shortterm_model.pkl", "rb") as f:
+            model = pickle.load(f)
+        return model
+    except Exception as e:
+        import streamlit as st
+        st.error(f"Error loading short-term model: {e}")
+        return None
 
 @st.cache_resource
 def load_long_term_model():
