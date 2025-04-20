@@ -17,7 +17,7 @@ def load_data():
         st.warning("⚠️ 'date' column not found in long-term forecast CSV.")
 
     if "date" in df_shortterm.columns:
-        df_shortterm["date"] = pd.to_datetime(df_shortterm["date"])
+        df_shortterm["date"] = pd.to_datetime(df_shortterm["Period"])
     else:
         st.warning("⚠️ 'date' column not found in short-term forecast CSV.")
 
