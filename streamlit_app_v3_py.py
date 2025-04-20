@@ -70,7 +70,7 @@ def load_production_data():
     # Assuming 'YOUR_API_KEY' is your actual API key from econdb.com
     # Replace 'YOUR_API_KEY' with your actual API Key.
     # Refer to econdb.com documentation for how to pass API Key, it might be in Headers or URL parameters.
-    headers = {"Authorization": "Bearer YOUR_API_KEY"}  # Example for Bearer token
+    headers = {"Authorization": "Bearer 9b26b5d5fc3c3cd3bd0aca58d14a871215020ff3"}  # Example for Bearer token
     # Or as a URL parameter:
     # url = f"{url}&api_key=YOUR_API_KEY" 
     
