@@ -19,6 +19,9 @@ def load_short_term_data():
 
 @st.cache_resource
 def load_short_term_model():
+    from sklearn.linear_model import LinearRegression  # or whatever standard model
+    model = LinearRegression()
+    joblib.dump(model, "norway_oil_forecast_montecarlo.pkl")
     """Loads a model from a CSV file.
 
     Returns:
