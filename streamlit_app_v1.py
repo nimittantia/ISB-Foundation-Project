@@ -19,7 +19,7 @@ EIA_API_URL = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
 PRODUCTS = ["EPCBRENT", "EPCWTI"]
 
 # --- Streamlit UI ---
-st.title("Oil Prices Data Explorer")
+st.title("Oil Prices Data Explorer V1")
 
 api_key = st.text_input("Enter your EIA API Key", type="password")
 
