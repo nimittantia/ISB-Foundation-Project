@@ -48,7 +48,11 @@ if forecast_type == "Short Term":
     st.subheader("Short Term Forecast (Using Prophet Model)")
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    sns.lineplot(data=df_shortterm, x="date", y="production", label="Forecasted", ax=ax)
+    
+    sns.lineplot(data=df_shortterm, x="Period", y="Forecasted_Production_TBPD SARIMA", label="SARIMA", ax=ax)
+    sns.lineplot(data=df_shortterm, x="Period", y="Forecasted Production_TBPD XGBoost", label="XGBoost", ax=ax)
+    sns.lineplot(data=df_shortterm, x="Period", y="Forecasted Production_TBPD LSTM", label="LSTM", ax=ax)
+
     ax.set_title("Short Term Forecast")
     ax.set_xlabel("Date")
     ax.set_ylabel("Oil Production")
