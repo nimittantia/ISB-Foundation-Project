@@ -1,71 +1,65 @@
 import streamlit as st
 import pandas as pd
-import requests
-import json
-import time
-from io import BytesIO
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pickle
 
-# --- Constants ---
-EIA_API_URL = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
-PRODUCTS = ["EPCBRENT", "EPCWTI"]
+# --- Load Data ---
+@st.cache_data
+def load_data():
+    df_longterm = pd.read_csv("norway_oil_forecast_montecarlo.csv", parse_dates=["date"])
+    df_shortterm = pd.read_csv("df_short_term_forecasted.csv", parse_dates=["date"])
+    return df_longterm, df_shortterm
 
-# --- Streamlit UI ---
-st.title("Oil Prices Data Explorer V1")
+@st.cache_data
+def load_models():
+    with open("norway_oil_forecast_montecarlo.pkl", "rb") as f:
+        model_longterm = pickle.load(f)
+    with open("shortterm_model.pkl", "rb") as f:
+        model_shortterm = pickle.load(f)
+    return model_longterm, model_shortterm
 
-api_key = st.text_input("Enter your EIA API Key", type="password")
+# --- Main App ---
+st.set_page_config(page_title="Norway Oil Production Forecast", layout="wide")
+st.title("📈 Norway Oil Production Forecasting Dashboard")
 
-start_date = st.date_input("Start Date", value=pd.to_datetime("1986-01-03"))
-end_date = st.date_input("End Date", value=pd.to_datetime("2024-12-31"))
-selected_products = st.multiselect("Select Product(s)", PRODUCTS, default=PRODUCTS)
+df_longterm, df_shortterm = load_data()
+model_longterm, model_shortterm = load_models()
 
-if st.button("Fetch Oil Price Data") and api_key:
-    with st.spinner("Fetching data..."):
-        all_records = []
-        offset = 0
-        while True:
-            params = {
-                "frequency": "daily",
-                "data": ["value"],
-                "facets": {"product": selected_products},
-                "start": str(start_date),
-                "end": str(end_date),
-                "sort": [{"column": "period", "direction": "asc"}],
-                "length": 5000,
-                "offset": offset
-            }
+# --- Sidebar Filters ---
+st.sidebar.header("Filters")
+forecast_type = st.sidebar.radio("Select Forecast Type", ["Short Term", "Long Term"])
 
-            headers = {
-                "Accept": "application/json",
-                "X-Params": json.dumps(params)
-            }
+# --- Visualizations ---
+if forecast_type == "Short Term":
+    st.subheader("Short Term Forecast (Using Prophet Model)")
 
-            response = requests.get(EIA_API_URL, headers=headers, params={"api_key": api_key})
-            if response.status_code == 200:
-                data = response.json()
-                records = data.get("response", {}).get("data", [])
-                if not records:
-                    break
-                all_records.extend(records)
-                offset += 5000
-                time.sleep(1)
-            else:
-                st.error(f"Error fetching data: {response.status_code}")
-                break
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=df_shortterm, x="date", y="production", label="Forecasted", ax=ax)
+    ax.set_title("Short Term Forecast")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Oil Production")
+    st.pyplot(fig)
 
-        if all_records:
-            df = pd.DataFrame(all_records)
-            st.success("Data fetched successfully!")
-            st.dataframe(df)
-
-            csv = df.to_csv(index=False).encode('utf-8')
-            st.download_button("Download CSV", csv, "oil_prices.csv", "text/csv")
-
-            # Plotting
-            df['period'] = pd.to_datetime(df['period'])
-            df['value'] = pd.to_numeric(df['value'], errors='coerce')
-            st.line_chart(df.pivot(index='period', columns='product', values='value'))
-        else:
-            st.warning("No data returned.")
+    st.dataframe(df_shortterm.tail(10), use_container_width=True)
 
 else:
-    st.info("Enter API key and click 'Fetch Oil Price Data' to begin.")
+    st.subheader("Long Term Forecast (Using Monte Carlo Simulation)")
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=df_longterm, x="date", y="P10", label="P10", ax=ax)
+    sns.lineplot(data=df_longterm, x="date", y="P50", label="P50", ax=ax)
+    sns.lineplot(data=df_longterm, x="date", y="P90", label="P90", ax=ax)
+    ax.set_title("Long Term Forecast (P10, P50, P90)")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Oil Production")
+    st.pyplot(fig)
+
+    st.dataframe(df_longterm.tail(10), use_container_width=True)
+
+# --- Model Info ---
+st.sidebar.markdown("### Model Details")
+st.sidebar.markdown("""
+- **Short Term Model**: Trained Prophet model.
+- **Long Term Model**: Monte Carlo Simulation using historical decline curves and uncertainties.
+""")
