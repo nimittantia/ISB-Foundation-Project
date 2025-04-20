@@ -87,7 +87,7 @@ def load_production_data():
     return df
 
 df_prod = load_production_data()
-st.line_chart(df_prod.set_index("Date"))
+st.line_chart(df_prod.set_index("date"))
 
 # --- Section 3: Forecasting ---
 st.header("🔮 Forecasting Future Oil Production")
