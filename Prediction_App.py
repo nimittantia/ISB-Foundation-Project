@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -19,7 +20,7 @@ def load_short_term_data():
 @st.cache_resource
 def load_short_term_model():
     with open("Short_term_model.pkl", "rb") as f:
-        model = pickle.load(f)
+        model = joblib.load(f)
     return model
 
 # Function to load long-term data and model
