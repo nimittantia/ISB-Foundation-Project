@@ -37,15 +37,10 @@ def load_short_term_model():
 
 # Function to load long-term data and model
 @st.cache_data
-def load_long_term_data():
-    df = pd.read_csv("Long_Term_Data.csv")
-    df = df.rename(columns={
-        'Year': 'Period',
-        'Yearly Average Value': 'Price',
-        'Production_TBPD': 'Production'
-    })
-    df['Period'] = pd.to_datetime(df['Period'])  # Automatically handles various date formats
-    return df
+def load_short_term_model():
+    with open("Short_term_model.pkl", "rb") as f:
+        model = joblib.load(f)
+    return model
 
 @st.cache_resource
 def load_long_term_model():
