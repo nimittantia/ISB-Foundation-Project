@@ -86,11 +86,10 @@ def load_production_data():
     df = df[df["Production (000 bbl/day)"] > 0]
     return df
 
-st.write("df_prod columns:", df_prod.columns.tolist())
-st.write(df_prod.head())
-
 df_prod = load_production_data()
 st.line_chart(df_prod.set_index("date"))
+st.write("df_prod columns:", df_prod.columns.tolist())
+st.write(df_prod.head())
 
 # --- Section 3: Forecasting ---
 st.header("🔮 Forecasting Future Oil Production")
