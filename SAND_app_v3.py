@@ -41,7 +41,7 @@ model_longterm, model_shortterm = load_models()
 
 # --- Sidebar Filters ---
 st.sidebar.header("Filters")
-forecast_type = st.sidebar.radio("Select Forecast Type", ["Long Term", "Long Term"])
+forecast_type = st.sidebar.radio("Select Forecast Type", ["Short Term", "Long Term"])
 
 # --- Visualizations ---
 if forecast_type == "Short Term":
