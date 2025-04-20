@@ -41,7 +41,7 @@ model_longterm, model_shortterm = load_models()
 
 # --- Sidebar Filters ---
 st.sidebar.header("Filters")
-forecast_type = st.sidebar.radio("Select Forecast Type", ["Short Term", "Long Term"])
+forecast_type = st.sidebar.radio("Select Forecast Type", ["Long Term", "Long Term"])
 
 # --- Visualizations ---
 if forecast_type == "Short Term":
@@ -64,9 +64,9 @@ else:
     st.subheader("Long Term Forecast (Using Monte Carlo Simulation)")
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    sns.lineplot(data=df_longterm, x="date", y="P10", label="P10", ax=ax)
-    sns.lineplot(data=df_longterm, x="date", y="P50", label="P50", ax=ax)
-    sns.lineplot(data=df_longterm, x="date", y="P90", label="P90", ax=ax)
+    sns.lineplot(data=df_longterm, x="Year", y="Forecast_Mean", label="Forecast_Mean", ax=ax)
+    sns.lineplot(data=df_longterm, x="Year", y="Lower_5_percentile", label="Lower_5_percentile", ax=ax)
+    sns.lineplot(data=df_longterm, x="Year", y="Upper_95_percentile", label="Upper_95_percentile", ax=ax)
     ax.set_title("Long Term Forecast (P10, P50, P90)")
     ax.set_xlabel("Date")
     ax.set_ylabel("Oil Production")
