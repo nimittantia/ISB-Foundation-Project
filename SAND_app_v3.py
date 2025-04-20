@@ -7,9 +7,22 @@ import pickle
 # --- Load Data ---
 @st.cache_data
 def load_data():
-    df_longterm = pd.read_csv("norway_oil_forecast_montecarlo.csv", parse_dates=["date"])
-    df_shortterm = pd.read_csv("df_short_term_forecasted.csv", parse_dates=["date"])
+    df_longterm = pd.read_csv("norway_oil_forecast_montecarlo.csv")
+    df_shortterm = pd.read_csv("df_short_term_forecasted.csv")
+
+    # Check and convert 'date' column to datetime if it exists
+    if "date" in df_longterm.columns:
+        df_longterm["date"] = pd.to_datetime(df_longterm["Year"])
+    else:
+        st.warning("⚠️ 'date' column not found in long-term forecast CSV.")
+
+    if "date" in df_shortterm.columns:
+        df_shortterm["date"] = pd.to_datetime(df_shortterm["date"])
+    else:
+        st.warning("⚠️ 'date' column not found in short-term forecast CSV.")
+
     return df_longterm, df_shortterm
+
 
 @st.cache_data
 def load_models():
