@@ -19,28 +19,21 @@ def load_short_term_data():
 
 @st.cache_resource
 def load_short_term_model():
-    from sklearn.linear_model import LinearRegression  # or whatever standard model
-    model = LinearRegression()
-    joblib.dump(model, "norway_oil_forecast_montecarlo.pkl")
-    """Loads a model from a CSV file.
-
-    Returns:
-        A dictionary containing the model's coefficients and intercept.
-    """
-    try:
-        df = pd.read_csv('norway_oil_forecast_montecarlo.csv')
-        model_data = df.to_dict('records')[0]  # Convert the first row of DataFrame to a dictionary
-        return model_data
-    except FileNotFoundError:
-        print("Error: 'norway_oil_forecast_montecarlo.csv' not found.")
-        return None
-
-# Function to load long-term data and model
-@st.cache_data
-def load_short_term_model():
     with open("Short_term_model.pkl", "rb") as f:
         model = joblib.load(f)
     return model
+
+# Function to load long-term data and model
+@st.cache_data
+def load_long_term_data():
+    df = pd.read_csv("Long_Term_Data.csv")
+    df = df.rename(columns={
+        'Year': 'Period',
+        'Yearly Average Value': 'Price',
+        'Production_TBPD': 'Production'
+    })
+    df['Period'] = pd.to_datetime(df['Period'])  # Automatically handles various date formats
+    return df
 
 @st.cache_resource
 def load_long_term_model():
